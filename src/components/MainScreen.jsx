@@ -29,9 +29,9 @@ function MainScreen() {
         <div className='mainscreen flex-grow-1 position-relative pb-0'>
 
             <div className="question">
-                <div className=" border rounded d-flex align-items-center sec-bg p-3 shadow-sm ">
+                <div className=" border rounded d-flex align-items-center sec-bg p-2 shadow-sm ">
                     <input type="text" className="question-input w-100 h-100 border-0" placeholder='Ask questions or type "/" for commands' />
-                    <CiPaperplane className="question-icon" size={40}/>
+                    <CiPaperplane className="question-icon" size={35}/>
                 </div>
                 <div className="box"></div>
             </div>
