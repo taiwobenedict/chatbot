@@ -107,7 +107,8 @@ const ChatContextProvider = ({ children }) => {
 
     useEffect(() => {
        if (state.request)fetchResponse(state.chats);
-       // eslint-disable-next-linegi
+
+       // eslint-disable-next-line
     }, [state.request]);
 
 
