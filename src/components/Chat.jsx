@@ -32,7 +32,7 @@ export function Message({ content, time }) {
 
 
 export function Response({ content, time }) {
-    const { showBtn, loading } = useContext(UIContext)
+    const { showBtn } = useContext(UIContext)
     return (
         <div className='chat mb-4 position-relative'>
             <div className="chat-img">

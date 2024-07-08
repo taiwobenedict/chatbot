@@ -1,4 +1,4 @@
-import { createContext, useReducer, useEffect, useMemo, useContext, useState } from "react";
+import { createContext, useReducer, useEffect, useMemo, useContext } from "react";
 import Reducer from "../reducer";
 import OpenAI from "openai";
 import { UIContext } from "./UiContext";
@@ -51,12 +51,12 @@ const ChatContextProvider = ({ children }) => {
         dispatch({ type: "request", payload: true})
     };
 
-    const createHistory = (chat) => {
-        console.log(chat);
-        dispatch({
-            type: "add_history",
-        });
-    };
+    // const createHistory = (chat) => {
+    //     console.log(chat);
+    //     dispatch({
+    //         type: "add_history",
+    //     });
+    // };
 
     // {
     //     title: "Lorem, ipsum dolor.",
@@ -107,6 +107,7 @@ const ChatContextProvider = ({ children }) => {
 
     useEffect(() => {
        if (state.request)fetchResponse(state.chats);
+       // eslint-disable-next-linegi
     }, [state.request]);
 
 
