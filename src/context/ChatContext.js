@@ -2,6 +2,7 @@ import { createContext, useReducer, useEffect, useMemo, useContext } from "react
 import Reducer from "../reducer";
 import OpenAI from "openai";
 import { UIContext } from "./UiContext";
+import { toast } from "react-toastify";
 
 export const chatContext = createContext();
 
@@ -77,6 +78,7 @@ const ChatContextProvider = ({ children }) => {
 
     // Get Answers for question
     async function fetchResponse(chats) {
+        console.log("Hello")
         try {
             const completion = await openai.chat.completions.create({
                 messages: chats,
@@ -100,7 +102,10 @@ const ChatContextProvider = ({ children }) => {
 
 
         } catch (error) {
-            console.error("Error fetching response:", error);
+            toast.error("Something went wrong",)
+            dispatch({
+                type: "error"
+            })
         }
     }
 

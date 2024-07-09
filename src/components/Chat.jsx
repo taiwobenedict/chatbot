@@ -22,7 +22,7 @@ export function Message({ content, time }) {
                 <p className="m-0 font-weight-bold mr-3">You</p>
                 <p className='text-muted m-0'>{time}</p>
             </div>
-            <div className=" message chat-body d-flex align-items-end">
+            <div className=" message chat-body justify-content-between d-flex align-items-end">
                 <p className="m-0 mr-2"> {content} </p>
                 <FaRegEdit className='edit-chat' />
             </div>
@@ -48,7 +48,7 @@ export function Response({ content, time }) {
             </div>
 
 
-            <div className=" response chat-body  border shadow-sm">
+            <div className=" response chat-body justify-content-between  border shadow-sm">
                 <div className="m-0 mr-2"><SlowText text={content} speed={0.05} /></div>
                 <div className="ml-auto justify-content-end d-flex align-items-center mt-3">
                     <div className={`align-items-center custom-btn ${showBtn && "show-btn"}`}>
@@ -77,7 +77,7 @@ export function AILoading() {
             </div>
 
 
-            <div className=" response chat-body">
+            <div className=" response chat-body justify-content-between">
                 <div className="m-0 mr-2"><SyncLoader color='#ccc' speedMultiplier={1} /></div>
 
             </div>

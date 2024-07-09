@@ -36,7 +36,6 @@ img {
   background-color: var(--sec-color);
   position: sticky;
   top: 0;
-  margin-right: 3rem;
   transition: 0.4s;
 }
 
@@ -154,10 +153,8 @@ img {
 /* Main Screen */
 .mainscreen {
   background-color: var(--white-color);
-  width: 100%;
-  padding: 20px 0px;
-  padding-right: 10px;
   max-width: 850px;
+  padding: 20px 10px 0px 40px;
 }
 
 .chats {
@@ -210,12 +207,11 @@ img {
 .question {
   max-width: 750px ;
   margin-inline: auto;
-  bottom: 0;
-  width: 100%;
-  position: sticky;
-  top: 85%;
   z-index: 1;
-  
+  position: fixed;
+  bottom: 0;
+  width: -webkit-fill-available;
+  transform: translateX(-20px);
 }
 
 .box {
@@ -242,6 +238,10 @@ img {
   display: flex;
   visibility: visible;
   opacity: 1;
+}
+
+.sticky-footer {
+  margin-top: auto;
 }
 
 
@@ -285,10 +285,6 @@ img {
   .menu-chats-icon,
   .menu-add-icon {
     display: block;
-  }
-
-  .menubar {
-    margin-right: 2rem;
   }
 
  }
