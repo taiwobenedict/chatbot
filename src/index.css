@@ -254,6 +254,11 @@ img {
   height: calc(100% - 124.32px);
 }
 
+.welcome > div {
+  transform: translateX(-20px);
+}
+
+
 /* Responsiveness */
 .menubar {
   position: sticky;
