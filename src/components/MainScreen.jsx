@@ -21,7 +21,7 @@ function MainScreen() {
     }
 
     return (
-        <div className='mainscreen flex-grow-1 position-relative pb-0'>
+        <div className='mainscreen flex-grow-1 position-relative pb-0 d-flex align-items-end'>
             <ToastContainer />
 
 
@@ -55,7 +55,7 @@ function MainScreen() {
                                     </div>
                                 </div>
 
-                                <h3>How can I help you toady?</h3>
+                                <h4>How can I help you toady?</h4>
                             </div>
                         </div>
                     )
