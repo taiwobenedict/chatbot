@@ -33,12 +33,12 @@ function MiniSideBar() {
                     </div>
                     <h6 className="mb-0">Log out</h6>
                 </div>
-                <div className="logout d-flex align-items-center mt-5">
+                <a href='http://www.mitrealaw.ro' target='_blank' rel='noreferrer' className="logout d-flex align-items-center mt-5">
                     <div className="logout-icon mr-2">
                         <img src={Contact} alt="" />
                     </div>
                     <p className="mb-0 pri-text">Contact Andrei Mitrea</p>
-                </div>
+                </a>
             </div>
 
         </div>

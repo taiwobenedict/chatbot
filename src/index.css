@@ -4,6 +4,10 @@
   --white-color: #ffffff;
 }
 
+html {
+  scroll-behavior: smooth !important;
+}
+
 /* Font */
 @font-face {
   font-family: "Adamina";
@@ -106,6 +110,10 @@ img {
 
 .chat-heading {
   font-size: 15px;
+}
+
+.history-heading {
+  min-width: 238.13px
 }
 
 .history-icon {

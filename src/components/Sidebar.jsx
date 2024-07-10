@@ -39,7 +39,7 @@ function Sidebar() {
                 <input type="text" className="search-input" placeholder='Search...' />
             </div>
 
-            <div className="histories mt-3">
+            <div className="histories mt-3 w-100">
                 {histories.map((history, i )=> <History {...history} key={i} />)}
             </div>
         </div>

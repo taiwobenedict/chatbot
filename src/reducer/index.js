@@ -4,9 +4,11 @@ function Reducer(state, action) {
     case 'add_message':
       return { ...state, chats: [...state.chats, action.payload.message]};
     case 'start_new_chat':
-      return { ...state, chats: [{ role: 'system', content: `You are an helpful assistance to answers legal questions in law` }], newChat: true, };
+      return { ...state, chats: [{ role: 'system', content: `You are an helpful assistance to answers legal questions in law` }], newChat: true, loading: false };
     case 'add_history':
-      return { ...state, histories: [], newChat: false, };
+      let histories = state.histories
+      histories.map(history => history.active = false)
+      return { ...state, histories: [...histories, action.payload], newChat: false, };
     case 'request':
       return { ...state, request: action.payload, loading: !state.loading  };
     case 'error':

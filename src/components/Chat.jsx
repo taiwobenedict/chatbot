@@ -1,5 +1,4 @@
-import React, { useContext } from 'react'
-import { FaRegEdit } from "react-icons/fa";
+import React, { useContext, useState } from 'react'
 import UserMsg from "../images/UserMsg.png"
 import AIimage from '../images/AIimage.png'
 import { MdContentCopy } from "react-icons/md";
@@ -24,7 +23,6 @@ export function Message({ content, time }) {
             </div>
             <div className=" message chat-body justify-content-between d-flex align-items-end">
                 <p className="m-0 mr-2"> {content} </p>
-                <FaRegEdit className='edit-chat' />
             </div>
         </div>
     )
@@ -32,7 +30,16 @@ export function Message({ content, time }) {
 
 
 export function Response({ content, time }) {
-    const { showBtn } = useContext(UIContext)
+    const { showBtn } = useContext(UIContext);
+    const [buttonText, setButtonText] = useState('Copy');
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(content).then(() => {
+            setButtonText('Copied');
+            setTimeout(() => setButtonText('Copy'), 2000);
+        });
+    };
+
     return (
         <div className='chat mb-4 position-relative'>
             <div className="chat-img">
@@ -44,21 +51,23 @@ export function Response({ content, time }) {
                     <p className="m-0 font-weight-bold mr-3">Response</p>
                     <p className='text-muted m-0'>{time}</p>
                 </div>
-
             </div>
 
-
-            <div className=" response chat-body justify-content-between  border shadow-sm">
-                <div className="m-0 mr-2"><SlowText text={content} speed={0.05} /></div>
+            <div className="response chat-body justify-content-between border shadow-sm">
+                <div className="m-0 mr-2"><SlowText text={content} speed={0.0000000005} /></div>
                 <div className="ml-auto justify-content-end d-flex align-items-center mt-3">
-                    <div className={`align-items-center custom-btn ${showBtn && "show-btn"}`}>
+                    <div 
+                        className={`align-items-center custom-btn ${showBtn && "show-btn"}`} 
+                        onClick={handleCopy}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <MdContentCopy className='mr-1' />
-                        <span>Copy</span>
+                        <span>{buttonText}</span>
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export function AILoading() {
