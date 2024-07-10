@@ -4,12 +4,13 @@ import { CiPaperplane } from "react-icons/ci";
 import { chatContext } from '../context/ChatContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Logo from "../images/Logo.png"
 
 
 function MainScreen() {
     const [message, setMessage] = useState("")
-    const {chats, sendMessage, loading} = useContext(chatContext)
-    
+    const { chats, sendMessage, loading } = useContext(chatContext)
+
     const handleSubmit = (e) => {
         e.preventDefault()
 
@@ -18,32 +19,48 @@ function MainScreen() {
             setMessage("")
         }
     }
-    
+
     return (
         <div className='mainscreen flex-grow-1 position-relative pb-0'>
             <ToastContainer />
 
 
-                <form onSubmit={handleSubmit} className="question">
-                    <div className=" border rounded d-flex align-items-center sec-bg p-2 shadow-sm ">
-                            <input type="text" className="question-input w-100 h-100 border-0" placeholder='Ask questions or type "/" for commands' value={message} onChange={(e) => setMessage(e.target.value)} />
-                            <CiPaperplane className="question-icon" size={35}  onClick={handleSubmit} />
-                    </div>
-                    <div className="box"></div>
-                </form>
+            <form onSubmit={handleSubmit} className="question">
+                <div className=" border rounded d-flex align-items-center sec-bg p-2 shadow-sm ">
+                    <input type="text" className="question-input w-100 h-100 border-0" placeholder='Ask questions or type "/" for commands' value={message} onChange={(e) => setMessage(e.target.value)} />
+                    <CiPaperplane className="question-icon" size={35} onClick={handleSubmit} />
+                </div>
+                <div className="box"></div>
+            </form>
 
             <div className="chats">
 
                 {
-                    chats.slice(1).map((message, i )=> (
-                        message?.role === "user" ? <Message {...message} key={i} /> : message?.role === "assistant"? <Response {...message} key={i} /> : null
+                    chats.slice(1).map((message, i) => (
+                        message?.role === "user" ? <Message {...message} key={i} /> : message?.role === "assistant" ? <Response {...message} key={i} /> : null
                     ))
                 }
 
                 {
                     loading && <AILoading />
                 }
-                
+
+                {
+                    chats.length === 1 && (
+                        <div className='w-100 h-100 d-flex justify-content-center align-items-center'>
+                            <div>
+                                <div className="logo d-flex justify-content-center mb-4">
+                                    <div className="logo-img">
+                                        <img src={Logo} alt="" />
+                                    </div>
+                                </div>
+
+                                <h3>How can I help you toady?</h3>
+                            </div>
+                        </div>
+                    )
+                }
+
             </div>
 
         </div>

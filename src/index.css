@@ -225,7 +225,7 @@ img {
 }
 
 .box {
-  height: 30px;
+  height: 10px;
   background-color: var(--white-color);
   width: 100%;
 }

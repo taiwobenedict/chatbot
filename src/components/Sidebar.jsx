@@ -11,18 +11,6 @@ function Sidebar() {
      const {active, handleToggle } = useContext(UIContext)
      const {startNewChat, histories } = useContext(chatContext)
 
-    // let sample = [
-    //     {
-    //         title: "Lorem, ipsum dolor.",
-    //         body: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ab minus reiciendis quam!",
-    //         datetime: "Mon",
-    //         pinned: true,
-    //         active: false,
-    //         id: 1
-    //     },
-       
-    // ]
-
     return (
         <div className={`sidebar pt-3 pl-3 pb-3 pr-1 ${active.toggler1 && "show-bar"}`}>
             <div  id="toggler1" onClick={(e) => handleToggle(e.target.id)} >
