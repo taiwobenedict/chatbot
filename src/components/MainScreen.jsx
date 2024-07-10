@@ -36,9 +36,9 @@ function MainScreen() {
             {
                 chats.length === 1 ? (
                     <div className='welcome w-100 d-flex justify-content-center align-items-end'>
-                        <div className='w-100 d-flex justify-content-center'>
+                        <div className='w-100 d-flex justify-content-center mb-4'>
                             <div>
-                                <div className="logo d-flex justify-content-center mb-4">
+                                <div className="logo d-flex justify-content-center mb-3">
                                     <div className="logo-img">
                                         <img src={Logo} alt="" />
                                     </div>
