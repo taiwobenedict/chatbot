@@ -7,7 +7,7 @@ import MenuBar from './components/MenuBar';
 function App() {
   return (
     <div className="App">
-        <div className="d-flex">
+        <div className="d-flex position-fixed w-100">
             <MenuBar />
           <MiniSideBar />
             <SideBar />
