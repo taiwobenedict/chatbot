@@ -21,7 +21,7 @@ function MainScreen() {
     }
 
     return (
-        <div className='mainscreen flex-grow-1 position-relative pb-0 d-flex align-items-end'>
+        <div className='mainscreen flex-grow-1 position-relative pb-0'>
             <ToastContainer />
 
 
@@ -33,35 +33,38 @@ function MainScreen() {
                 <div className="box"></div>
             </form>
 
-            <div className="chats">
-
-                {
-                    chats.slice(1).map((message, i) => (
-                        message?.role === "user" ? <Message {...message} key={i} /> : message?.role === "assistant" ? <Response {...message} key={i} /> : null
-                    ))
-                }
-
-                {
-                    loading && <AILoading />
-                }
-
-                {
-                    chats.length === 1 && (
-                        <div className='w-100 h-100 d-flex justify-content-center align-items-center'>
+            {
+                chats.length === 1 ? (
+                    <div className='welcome w-100 d-flex justify-content-center align-items-end'>
+                        <div className='w-100 d-flex justify-content-center'>
                             <div>
                                 <div className="logo d-flex justify-content-center mb-4">
                                     <div className="logo-img">
                                         <img src={Logo} alt="" />
                                     </div>
                                 </div>
-
                                 <h4>How can I help you toady?</h4>
                             </div>
                         </div>
-                    )
-                }
+                    </div>
+                )
+                    : (
+                        <div className="chats">
+                            {
+                                chats.slice(1).map((message, i) => (
+                                    message?.role === "user" ? <Message {...message} key={i} /> : message?.role === "assistant" ? <Response {...message} key={i} /> : null
+                                ))
+                            }
 
-            </div>
+                            {
+                                loading && <AILoading />
+                            }
+
+                        </div>
+                    )
+            }
+
+
 
         </div>
     )
