@@ -256,6 +256,7 @@ img {
 
 .welcome > div {
   transform: translateX(-20px);
+  margin-bottom: 10rem;
 }
 
 
