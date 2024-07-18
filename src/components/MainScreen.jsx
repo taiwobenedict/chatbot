@@ -2,8 +2,6 @@ import React, { useContext, useState } from 'react'
 import { AILoading, Message, Response } from './Chat'
 import { CiPaperplane } from "react-icons/ci";
 import { chatContext } from '../context/ChatContext';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Logo from "../images/Logo.png"
 
 
@@ -22,9 +20,6 @@ function MainScreen() {
 
     return (
         <div className='mainscreen flex-grow-1 position-relative pb-0'>
-            <ToastContainer />
-
-
             <form onSubmit={handleSubmit} className="question">
                 <div className=" border rounded d-flex align-items-center sec-bg p-2 shadow-sm ">
                     <input type="text" className="question-input w-100 h-100 border-0" placeholder='Ask questions or type "/" for commands' value={message} onChange={(e) => setMessage(e.target.value)} />

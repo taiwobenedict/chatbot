@@ -281,6 +281,16 @@ img {
 }
 
 
+.auth-container {
+  max-width: 400px;
+  margin-inline: auto;
+}
+
+.form-control:focus {
+  border-color: rgb(225, 45, 32);
+  box-shadow: 0 0 0 0.2rem rgba(225, 45, 32, 0.25)
+}
+
 
 
 /* // Extra small devices (portrait phones, less than 576px) */

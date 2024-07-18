@@ -13,6 +13,8 @@ function Reducer(state, action) {
       return { ...state, request: action.payload, loading: !state.loading  };
     case 'error':
       return { ...state, loading: !state.loading  };
+    case 'login_user':
+      return { ...state, user: action.payload  };
     default:
       return state;
   }

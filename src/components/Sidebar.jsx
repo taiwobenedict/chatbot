@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FaPlus } from "react-icons/fa6";
 import { FiSearch } from "react-icons/fi";
 import History from './History';
@@ -6,10 +6,17 @@ import { HiMiniBars3BottomRight } from "react-icons/hi2";
 import { UIContext } from '../context/UiContext';
 import { useContext } from 'react';
 import { chatContext } from '../context/ChatContext';
+import { fetchHistories } from '../services';
 
 function Sidebar() {
      const {active, handleToggle } = useContext(UIContext)
      const {startNewChat, histories } = useContext(chatContext)
+
+     useEffect(()=> {
+        // fetchHistories()
+     },[])
+
+
 
     return (
         <div className={`sidebar pt-3 pl-3 pb-3 pr-1 ${active.toggler1 && "show-bar"}`}>

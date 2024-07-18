@@ -6,8 +6,10 @@ import Logo from "../images/Logo.png"
 import { HiMiniBars3BottomRight } from "react-icons/hi2";
 import { useContext } from 'react';
 import { UIContext } from '../context/UiContext';
+import { chatContext } from '../context/ChatContext'
 
 function MiniSideBar() {
+    const {user} = useContext(chatContext)
     const {active, handleToggle} = useContext(UIContext)
     return (
         <div className={`mini-sidebar p-2 pt-3 ${active.toggler2 && "show-bar"}`}>
@@ -26,6 +28,7 @@ function MiniSideBar() {
             <div className="sidebar-footer">
                 <div className="user mb-3">
                     <img src={User} alt="" />
+                    <p className="mt-2">{user?.name}</p>
                 </div>
                 <div className="logout d-flex align-items-center">
                     <div className="logout-icon mr-2">
