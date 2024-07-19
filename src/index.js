@@ -6,7 +6,7 @@ import { UIContextProvider } from "./context/UiContext";
 import ChatContextProvider from "./context/ChatContext";
 import { transitions, positions, Provider as AlertProvider } from 'react-alert'
 import AlertTemplate from 'react-alert-template-basic'
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 
 // Bootstrap
 import "bootstrap/dist/css/bootstrap.css";
@@ -26,9 +26,9 @@ root.render(
     <UIContextProvider>
       <AlertProvider template={AlertTemplate} {...options}>
         <ChatContextProvider>
-          <BrowserRouter>
+          <HashRouter>
             <App />
-          </BrowserRouter>
+          </HashRouter>
         </ChatContextProvider>
       </AlertProvider>
     </UIContextProvider>
