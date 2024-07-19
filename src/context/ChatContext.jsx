@@ -53,7 +53,7 @@ const ChatContextProvider = ({ children }) => {
     const [tempMessages, setTempMessages] = useState([]);
     const [activeHistoryId, setActiveHistoryId] = useState("");
 
-    const openai = useMemo(() => new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true }), []);
+    const openai = useMemo(() => new OpenAI({ apiKey: process.env.REACT_APP_OPENAI_API_KEY, dangerouslyAllowBrowser: true }), []);
 
     // Function to send a user message
     const sendMessage = (message) => {
@@ -224,6 +224,7 @@ const ChatContextProvider = ({ children }) => {
         if (state.request) {
             fetchResponse(state.chats);
         }
+        // eslint-disable-next-line
     }, [state.request]);
 
     // useEffect to store temp messages when there are any
@@ -232,6 +233,7 @@ const ChatContextProvider = ({ children }) => {
             tempMessages.forEach(tempMessage => storeMessage(state.user.id, activeHistoryId, tempMessage));
             setTempMessages([]);
         }
+        // eslint-disable-next-line
     }, [tempMessages, activeHistoryId]);
 
     // Provide the context with all necessary values and functions

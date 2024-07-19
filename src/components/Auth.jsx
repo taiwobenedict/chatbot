@@ -9,13 +9,13 @@ import { chatContext } from '../context/ChatContext';
 function Auth() {
     const [loginState, setLoginState] = useState(true)
     const [{ email, username, password }, setFormData] = useState({ email: "", username: "", password: "" })
-    const [buttonLock, setButtonLock] = useState(true)
+
 
 
 
     const alert = useAlert()
     const navigate = useNavigate()
-    const { dispatch, user } = useContext(chatContext)
+    const { dispatch } = useContext(chatContext)
 
     function changeLoginState() {
         setLoginState(prev => (!prev))
@@ -131,6 +131,7 @@ function Auth() {
 
     useEffect(()=> {
         checkIfUserSignedIn()
+        // eslint-disable-next-line
     }, [])
 
 
@@ -167,7 +168,7 @@ function Auth() {
                             <div className="mt-4 d-flex align-items-center justify-content-between">
                                 <p className='m-0'>
                                     {loginState ? "Don't" : "Already"} have an account?
-                                    <span className='ml-2'>{loginState ? <a href='#' onClick={changeLoginState}>Resgister</a> : <a href='#' onClick={changeLoginState}>Login</a>}</span>
+                                    <span className='ml-2'>{loginState ? <a onClick={changeLoginState}>Resgister</a> : <a href='#' onClick={changeLoginState}>Login</a>}</span>
                                 </p>
                             </div>
                         </form>
