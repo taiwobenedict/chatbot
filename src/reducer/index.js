@@ -16,7 +16,7 @@ function Reducer(state, action) {
     case 'set_active':
       const id = action.payload
 
-      state.histories.map(history => {
+      state.histories.forEach(history => {
         if (history.id === id) {
           history.active = true;
         } else {
