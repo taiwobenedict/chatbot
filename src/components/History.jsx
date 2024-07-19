@@ -1,13 +1,28 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import ActiveChat from '../images/ActiveChat.png'
 import SlowText from './TextAnimation'
+import { chatContext } from '../context/ChatContext'
 
 
-function History({ title, body, active, datetime }) {
+function History({ id, title, body, active, datetime }) {
+	const { fetchAllMessages, dispatch, user } = useContext(chatContext)
+
+	const displayMessage =(e) => {
+
+		fetchAllMessages(user.id, e.target.id)
+		dispatch({
+			type: "set_active",
+			payload: e.target.id
+		})
+		
+	}
+
+
+
 	return (
-		<div className={`chat-history d-flex align-items-start w-100 ${active && "active-history"}`}>
+		<div className={`chat-history d-flex align-items-start w-100 ${active && "active-history"} position-relative`}>
 			<div className='history-icon mr-2'>
-				{
+				{ 
 					active ? <img src={ActiveChat} alt="" /> : <span className='mr-3'></span>
 				}
 			</div>
@@ -18,7 +33,7 @@ function History({ title, body, active, datetime }) {
 				</div>
 				<div className='m-0'><SlowText text={body} speed={50}/></div>
 			</div>
-
+				<div className="chat-cover"  id={id}  onClick={displayMessage}></div>
 		</div>
 	)
 }

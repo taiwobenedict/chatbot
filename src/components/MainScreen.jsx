@@ -20,13 +20,7 @@ function MainScreen() {
 
     return (
         <div className='mainscreen flex-grow-1 position-relative pb-0'>
-            <form onSubmit={handleSubmit} className="question">
-                <div className=" border rounded d-flex align-items-center sec-bg p-2 shadow-sm ">
-                    <input type="text" className="question-input w-100 h-100 border-0" placeholder='Ask questions or type "/" for commands' value={message} onChange={(e) => setMessage(e.target.value)} />
-                    <CiPaperplane className="question-icon" size={35} onClick={handleSubmit} />
-                </div>
-                <div className="box"></div>
-            </form>
+
 
             {
                 chats.length === 1 ? (
@@ -59,6 +53,16 @@ function MainScreen() {
                     )
             }
 
+            <div className='form-container'>
+                <form onSubmit={handleSubmit} className="question">
+                    <div className=" border rounded d-flex align-items-center sec-bg p-2 shadow-sm ">
+                        <input type="text" className="question-input w-100 h-100 border-0" placeholder='Ask questions or type "/" for commands' value={message} onChange={(e) => setMessage(e.target.value)} />
+                        <CiPaperplane className="question-icon" size={35} onClick={handleSubmit} />
+                    </div>
+                    <div className="box"></div>
+                </form>
+
+            </div>
 
 
         </div>

@@ -6,14 +6,15 @@ import { HiMiniBars3BottomRight } from "react-icons/hi2";
 import { UIContext } from '../context/UiContext';
 import { useContext } from 'react';
 import { chatContext } from '../context/ChatContext';
-import { fetchHistories } from '../services';
+
 
 function Sidebar() {
      const {active, handleToggle } = useContext(UIContext)
-     const {startNewChat, histories } = useContext(chatContext)
+     const {startNewChat, histories, fetchHistories, user } = useContext(chatContext)
 
-     useEffect(()=> {
-        // fetchHistories()
+     useEffect(  ()=> {
+        fetchHistories(user.id)
+
      },[])
 
 

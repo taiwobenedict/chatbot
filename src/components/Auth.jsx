@@ -1,21 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Logo from "../images/Logo.png"
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from "firebase/auth";
 import { useAlert } from 'react-alert'
 import { auth } from '../firestore';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { chatContext } from '../context/ChatContext';
 
 function Auth() {
     const [loginState, setLoginState] = useState(true)
     const [{ email, username, password }, setFormData] = useState({ email: "", username: "", password: "" })
     const [buttonLock, setButtonLock] = useState(true)
-    
+
 
 
     const alert = useAlert()
     const navigate = useNavigate()
-    const {dispatch, user} = useContext(chatContext)
+    const { dispatch, user } = useContext(chatContext)
 
     function changeLoginState() {
         setLoginState(prev => (!prev))
@@ -35,6 +35,29 @@ function Auth() {
 
         if (loginState) {
             if (email !== '' && password !== '') {
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        // Signed in 
+                        const user = userCredential.user;
+
+                        new Promise((resolve, reject) => {
+                            dispatch({
+                                type: "login_user",
+                                payload: {
+                                    id: user.uid,
+                                    name: user.displayName
+                                }
+                            })
+                            resolve(user.displayName)
+                        }).then((name) => {
+                            navigate('/')
+                            alert.success(`Welcome back! ${name && name}`)
+                        })
+                        // ...
+                    })
+                    .catch((error) => {
+                        alert.error(error.code.slice(5))
+                    });
 
             }
         } else {
@@ -48,8 +71,6 @@ function Auth() {
                         updateProfile(auth.currentUser, {
                             displayName: username,
                         }).then(() => {
-                            
-                            alert.success("Registration Successful")
 
                             new Promise((resolve, reject) => {
                                 dispatch({
@@ -58,17 +79,17 @@ function Auth() {
                                         id: user.uid,
                                         name: user.displayName
                                     }
-                                })   
+                                })
                                 resolve()
-                            }).then(()=> {
-                                console.log("Hello")
+                            }).then(() => {
                                 navigate('/')
+                                alert.success("Registration successful! Welcome.")
                             })
-                            
+
                         }).catch((error) => {
                             alert.error("Something went wrong!")
                         });
-                       
+
                     })
                     .catch((error) => {
                         alert.error(error.code.slice(5))
@@ -78,12 +99,39 @@ function Auth() {
             }
         }
         setFormData({
-            username:"",
+            username: "",
             password: "",
             email: "",
         })
     }
 
+    function checkIfUserSignedIn() {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                new Promise((resolve, reject) => {
+                    dispatch({
+                        type: "login_user",
+                        payload: {
+                            id: user.uid,
+                            name: user.displayName
+                        }
+                    })
+                    resolve()
+                }).then(() => {
+
+                    navigate('/')
+                })
+              // ...
+            } else {
+              // User is signed out
+              // ...
+            }
+          });
+    }
+
+    useEffect(()=> {
+        checkIfUserSignedIn()
+    }, [])
 
 
     return (

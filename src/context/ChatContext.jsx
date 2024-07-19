@@ -1,20 +1,18 @@
-import { createContext, useReducer, useEffect, useMemo, useContext, useState } from "react";
-import Reducer from "../reducer";
+import React, { createContext, useReducer, useEffect, useMemo, useContext, useState } from "react";
 import OpenAI from "openai";
 import { UIContext } from "./UiContext";
-import { v4 as uuid4 } from "uuid"
-import { storeChatHistory } from "../services"
-
+import { v4 as uuid4 } from "uuid";
+import { doc, getDocs, collection, addDoc, query, where, orderBy } from "firebase/firestore";
+import { db } from "../firestore";
+import Reducer from "../reducer";
 
 export const chatContext = createContext();
 
 function formatChatDateTime(time) {
-
     const day = time.getDate();
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const month = monthNames[time.getMonth()];
-    const date = `${day}/${month}`
-
+    const date = `${day}/${month}`;
 
     let hours = time.getHours();
     const minutes = time.getMinutes().toString().padStart(2, '0');
@@ -22,38 +20,26 @@ function formatChatDateTime(time) {
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
     const formattedTime = `${hours}:${minutes} ${ampm}`;
-    return {
-        date,
-        formattedTime,
-    };
+    return { date, formattedTime };
 }
 
 function extractTitleAndBody(text) {
-
-    let title;
-    let body;
-
-    title = text.slice(0, 20);
+    let title = text.slice(0, 20);
     if (title[title.length - 1] !== '.') {
         title += '.';
     }
 
-
-    body = text.slice(0, 75);
-
-    // Check if body exceeds 80 characters
+    let body = text.slice(0, 75);
     if (text.length > 75) {
-        body += '...'
+        body += '...';
     }
 
-    return {
-        title: title,
-        body: body
-    };
+    return { title, body };
 }
 
 const ChatContextProvider = ({ children }) => {
     const { setShowBtn } = useContext(UIContext);
+
     const initialState = {
         loading: false,
         chats: [{ role: 'system', content: `You are a helpful assistant to give all the information about life` }],
@@ -64,115 +50,191 @@ const ChatContextProvider = ({ children }) => {
     };
 
     const [state, dispatch] = useReducer(Reducer, initialState);
-    const [tempMessages, setTempMessage] = useState([])
-    const [activeHistoryId, setActiveHistoryId] = useState("")
+    const [tempMessages, setTempMessages] = useState([]);
+    const [activeHistoryId, setActiveHistoryId] = useState("");
 
-    const openai = useMemo(() => {
-        return new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
-    }, []);
+    const openai = useMemo(() => new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true }), []);
 
-    // Send Message
+    // Function to send a user message
     const sendMessage = (message) => {
         setShowBtn(false);
 
+        if (state.newChat) {
+            const id = uuid4();
+            setActiveHistoryId(id);
+        }
 
-        // Add message
+        const formattedTime = formatChatDateTime(new Date()).formattedTime;
+
         dispatch({
             type: "add_message",
             payload: {
                 message: {
                     role: "user",
                     content: message,
-                    time: formatChatDateTime(new Date()).formattedTime,
+                    time: formattedTime,
+                    createdAt: new Date(), // Store createdAt as a JavaScript Date object
                 },
             },
         });
 
-        setTempMessage(prev => ([...prev, {
+        setTempMessages(prev => [...prev, {
             role: "user",
             content: message,
-            time: formatChatDateTime(new Date()).formattedTime,
-        }]))
+            time: formattedTime,
+            createdAt: new Date(), // Store createdAt in tempMessages
+        }]);
 
-        // Open system to make request
-        dispatch({ type: "request", payload: true })
+        dispatch({ type: "request", payload: true });
     };
 
-    // Create History
+    // Function to create a chat history
     const createHistory = (chat) => {
-        dispatch({
-            type: "add_history",
-            payload: chat
-        });
-
-        storeChatHistory("user1", chat)
+        dispatch({ type: "add_history", payload: chat });
+        storeChatHistory(state.user.id, chat); // Call to store the chat history
     };
 
-    // Start New Chat
+    // Function to start a new chat
     const startNewChat = () => {
-        dispatch({
-            type: "start_new_chat",
-
-        });
+        dispatch({ type: "start_new_chat" });
     };
 
-    // Get Answers for question
-    async function fetchResponse(chats) {
+    // Function to fetch response from OpenAI
+    const fetchResponse = async (chats) => {
         try {
             const completion = await openai.chat.completions.create({
                 messages: chats,
                 model: "gpt-4-turbo",
             });
 
+            const newMessage = {
+                ...completion.choices[0].message,
+                time: formatChatDateTime(new Date()).formattedTime,
+                createdAt: new Date(), // Store createdAt as a JavaScript Date object
+            };
 
-            // Add answers
+            setTempMessages(prev => [...prev, newMessage]);
+
             dispatch({
                 type: "add_message",
                 payload: {
-                    message: {
-                        ...completion.choices[0].message,
-                        time: formatChatDateTime(new Date()).formattedTime,
-                    },
+                    message: newMessage,
                 },
             });
 
-            setTempMessage(prev => ([...prev, {
-                ...completion.choices[0].message,
-                time: formatChatDateTime(new Date()).formattedTime,
-            }]))
+            dispatch({ type: "request", payload: false });
 
-            // Close system for request
-            dispatch({ type: "request", payload: false })
-
-
-            // Create History
             if (state.newChat) {
-                setActiveHistoryId(uuid4())
                 createHistory({
                     title: extractTitleAndBody(chats[1].content).title,
                     body: extractTitleAndBody(completion.choices[0].message.content).body,
                     datetime: formatChatDateTime(new Date()).date,
                     active: true,
-                    id:activeHistoryId
-                })
+                    id: activeHistoryId,
+                    createdAt: new Date(), // Store createdAt as a JavaScript Date object
+                });
             }
+        } catch (error) {
+            dispatch({ type: "error" });
+        }
+    };
 
+    // Function to store chat history in Firestore
+    const storeChatHistory = async (userId, chat) => {
+        try {
+            const historyRef = collection(db, `chatHistories`);
+            await addDoc(historyRef, {
+                userId: userId,
+                id: chat?.id,
+                title: chat?.title,
+                body: chat?.body,
+                active: false,
+                datetime: chat?.datetime,
+                createdAt: new Date(), // Store createdAt as a JavaScript Date object
+            });
+        } catch (error) {
+            console.error('Error storing chat history:', error);
+        }
+    };
+
+    // Function to store a message in a conversation
+    const storeMessage = async (userId, historyId, message) => {
+        try {
+            const messageRef = doc(db, 'conversations', userId); // Reference to the userId city document
+            const historyRef = collection(messageRef, historyId);
+            await addDoc(historyRef, {
+                role: message?.role,
+                content: message?.content,
+                time: message?.time,
+                createdAt: new Date(), // Store createdAt as a JavaScript Date object
+            });
+        } catch (error) {
+            console.error('Error storing message:', error);
+        }
+    };
+
+    // Function to fetch all messages from a conversation
+    const fetchAllMessages = async (userId, historyId) => {
+        try {
+            const messages = [{ role: 'system', content: `You are a helpful assistant to give all the information about life` }].reverse();
+            const q = query(collection(db, `conversations/${userId}/${historyId}/`), orderBy('createdAt', 'asc'))
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                messages.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+
+
+            dispatch({
+                type: "set_messages",
+                payload: messages
+            });
+
+            setActiveHistoryId(historyId);
 
         } catch (error) {
-            dispatch({
-                type: "error"
-            })
+            console.error('Error fetching messages:', error);
         }
-    }
+    };
 
+    // Function to fetch chat histories for a specific user
+    const fetchHistories = async (userId) => {
+        try {
+            const collectionRef = collection(db, 'chatHistories');
+            const q = query(collectionRef, where('userId', '==', userId), orderBy('createdAt', 'desc'));
+            const querySnapshot = await getDocs(q);
+            const fetchedDocuments = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
 
+            dispatch({
+                type: "set_histories",
+                payload: fetchedDocuments
+            });
+        } catch (error) {
+            console.error('Error fetching histories:', error);
+        }
+    };
+
+    // useEffect to fetch response when there is a request
     useEffect(() => {
-        if (state.request) fetchResponse(state.chats);
-
-        // eslint-disable-next-line
+        if (state.request) {
+            fetchResponse(state.chats);
+        }
     }, [state.request]);
 
+    // useEffect to store temp messages when there are any
+    useEffect(() => {
+        if (tempMessages.length > 0 && activeHistoryId) {
+            tempMessages.forEach(tempMessage => storeMessage(state.user.id, activeHistoryId, tempMessage));
+            setTempMessages([]);
+        }
+    }, [tempMessages, activeHistoryId]);
 
+    // Provide the context with all necessary values and functions
     return (
         <chatContext.Provider value={{
             ...state,
@@ -180,6 +242,10 @@ const ChatContextProvider = ({ children }) => {
             startNewChat,
             createHistory,
             dispatch,
+            storeChatHistory,
+            storeMessage,
+            fetchAllMessages,
+            fetchHistories,
         }}>
             {children}
         </chatContext.Provider>

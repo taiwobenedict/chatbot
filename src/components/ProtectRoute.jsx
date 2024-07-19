@@ -4,8 +4,8 @@ import { chatContext } from '../context/ChatContext';
 
 function ProtectRoute() {
 
-  // const {user} = useContext(chatContext)
-  const user = true;
+  const {user} = useContext(chatContext)
+  // const user = true;
 
   
   return user ? <Outlet /> : <Navigate to="/auth" />

@@ -7,10 +7,35 @@ import { HiMiniBars3BottomRight } from "react-icons/hi2";
 import { useContext } from 'react';
 import { UIContext } from '../context/UiContext';
 import { chatContext } from '../context/ChatContext'
+import { auth } from '../firestore'
+import { signOut } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
+import { useAlert } from 'react-alert'
 
 function MiniSideBar() {
-    const {user} = useContext(chatContext)
+    const {user,  dispatch } = useContext(chatContext)
     const {active, handleToggle} = useContext(UIContext)
+    const navigate = useNavigate()
+    const alert = useAlert()
+    
+    
+    async function logOut () {
+        signOut(auth).then(() => {
+            new Promise((resolve, reject) => {
+                dispatch({
+                    type: "logout_user",
+                 
+                })
+                resolve()
+            }).then(() => {
+                alert.info("You've logged out!")
+                navigate('/auth')
+            })
+          }).catch((error) => {
+            alert.error("Something went wrong!")
+          });
+    }
+    
     return (
         <div className={`mini-sidebar p-2 pt-3 ${active.toggler2 && "show-bar"}`}>
             <div className='mini-toggler-close' id="toggler2" onClick={(e) => handleToggle(e.target.id)} >
@@ -30,7 +55,7 @@ function MiniSideBar() {
                     <img src={User} alt="" />
                     <p className="mt-2">{user?.name}</p>
                 </div>
-                <div className="logout d-flex align-items-center">
+                <div className="logout d-flex align-items-center pointer" onClick={logOut}>
                     <div className="logout-icon mr-2">
                         <img src={Signout} alt="" />
                     </div>
