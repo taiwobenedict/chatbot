@@ -168,7 +168,7 @@ function Auth() {
                             <div className="mt-4 d-flex align-items-center justify-content-between">
                                 <p className='m-0'>
                                     {loginState ? "Don't" : "Already"} have an account?
-                                    <span className='ml-2'>{loginState ? <a href='/auth' onClick={changeLoginState}>Resgister</a> : <a href='/auth' onClick={changeLoginState}>Login</a>}</span>
+                                    <span className='ml-2'>{loginState ? <a href='/#/auth' onClick={changeLoginState}>Resgister</a> : <a href='/#/auth' onClick={changeLoginState}>Login</a>}</span>
                                 </p>
                             </div>
                         </form>
