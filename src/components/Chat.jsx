@@ -54,7 +54,7 @@ export function Response({ content, time }) {
             </div>
 
             <div className="response chat-body justify-content-between border shadow-sm">
-                <div className="m-0 mr-2"><SlowText text={content} speed={0.0000000005} /></div>
+                <div className="m-0 mr-2"><SlowText text={content} speed={0} /></div>
                 <div className="ml-auto justify-content-end d-flex align-items-center mt-3">
                     <div 
                         className={`align-items-center custom-btn ${showBtn && "show-btn"}`} 

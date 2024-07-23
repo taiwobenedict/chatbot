@@ -1,139 +1,138 @@
-import React, { useContext, useEffect, useState } from 'react'
-import Logo from "../images/Logo.png"
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from "firebase/auth";
-import { useAlert } from 'react-alert'
+import React, { useContext, useEffect, useState } from 'react';
+import Logo from '../images/Logo.png';
+import { 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword, 
+    updateProfile, 
+    onAuthStateChanged, 
+    sendPasswordResetEmail 
+} from 'firebase/auth';
+import { useAlert } from 'react-alert';
 import { auth } from '../firestore';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import { chatContext } from '../context/ChatContext';
 
 function Auth() {
-    const [loginState, setLoginState] = useState(true)
-    const [{ email, username, password }, setFormData] = useState({ email: "", username: "", password: "" })
+    const [loginState, setLoginState] = useState('login');
+    const [formData, setFormData] = useState({ email: '', username: '', password: '' });
+    const [errorMessages, setErrorMessages] = useState({ emailErr: '', usernameErr: '', passwordErr: '' });
 
+    const alert = useAlert();
+    const navigate = useNavigate();
+    const { dispatch } = useContext(chatContext);
 
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        setFormData(prev => ({ ...prev, [id]: value }));
+        setErrorMessages({ emailErr: '', usernameErr: '', passwordErr: '' });
+    };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    const alert = useAlert()
-    const navigate = useNavigate()
-    const { dispatch } = useContext(chatContext)
+        const { email, password, username } = formData;
 
-    function changeLoginState() {
-        setLoginState(prev => (!prev))
-    }
-
-    function handleInputChange(e) {
-
-        setFormData(prev => ({
-            ...prev,
-            [e.target.id]: e.target.value
-        }))
-
-    }
-
-    function handleSubmit(e) {
-        e.preventDefault()
-
-        if (loginState) {
-            if (email !== '' && password !== '') {
-                signInWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        // Signed in 
-                        const user = userCredential.user;
-
-                        new Promise((resolve, reject) => {
-                            dispatch({
-                                type: "login_user",
-                                payload: {
-                                    id: user.uid,
-                                    name: user.displayName
-                                }
-                            })
-                            resolve(user.displayName)
-                        }).then((name) => {
-                            navigate('/')
-                            alert.success(`Welcome back! ${name && name}`)
-                        })
-                        // ...
-                    })
-                    .catch((error) => {
-                        alert.error(error.code.slice(5))
-                    });
-
+        if (loginState === 'login') {
+            if (!email || !password) {
+                setErrorMessages({
+                    emailErr: !email ? 'Please provide your email' : '',
+                    passwordErr: !password ? 'Please enter your password' : ''
+                });
+                return;
             }
-        } else {
 
-            if (email !== '' && password !== '' && username !== '') {
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
+                dispatch({
+                    type: 'login_user',
+                    payload: {
+                        id: user.uid,
+                        name: user.displayName
+                    }
+                });
 
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        const user = userCredential.user
-                        updateProfile(auth.currentUser, {
-                            displayName: username,
-                        }).then(() => {
+                navigate('/');
+                alert.success(`Welcome back! ${user.displayName}`);
+            } catch (error) {
+                alert.error(error.code.slice(5));
+            }
+        } else if (loginState === 'register') {
+            if (!email || !password || !username) {
+                setErrorMessages({
+                    emailErr: !email ? 'Please provide your email' : '',
+                    passwordErr: !password ? 'Please enter your password' : '',
+                    usernameErr: !username ? 'Please provide your username' : ''
+                });
+                return;
+            }
 
-                            new Promise((resolve, reject) => {
-                                dispatch({
-                                    type: "login_user",
-                                    payload: {
-                                        id: user.uid,
-                                        name: user.displayName
-                                    }
-                                })
-                                resolve()
-                            }).then(() => {
-                                navigate('/')
-                                alert.success("Registration successful! Welcome.")
-                            })
+            if (password.length < 6) {
+                setErrorMessages(prev => ({ ...prev, passwordErr: 'Password must not be less than 6 characters' }));
+                return;
+            }
 
-                        }).catch((error) => {
-                            alert.error("Something went wrong!")
-                        });
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
-                    })
-                    .catch((error) => {
-                        alert.error(error.code.slice(5))
+                await updateProfile(auth.currentUser, { displayName: username });
 
-                    });
+                dispatch({
+                    type: 'login_user',
+                    payload: {
+                        id: user.uid,
+                        name: user.displayName
+                    }
+                });
 
+                navigate('/');
+                alert.success('Registration successful! Welcome.');
+            } catch (error) {
+                alert.error(error.code.slice(5));
+            }
+        } else if (loginState === 'forget-password') {
+            if (!email) {
+                setErrorMessages({ emailErr: 'Please provide your email' });
+                return;
+            }
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert.success('Reset password has been sent to your email.', {
+                    timeout: 0,
+                    onClose: () => setLoginState('login')
+                });
+            } catch (error) {
+                alert.error(error.code.slice(5));
             }
         }
-        setFormData({
-            username: "",
-            password: "",
-            email: "",
-        })
-    }
 
-    function checkIfUserSignedIn() {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                new Promise((resolve, reject) => {
+        setFormData({ email: '', username: '', password: '' });
+    };
+
+    useEffect(() => {
+        const checkIfUserSignedIn = async () => {
+            onAuthStateChanged(auth, user => {
+                if (user) {
                     dispatch({
-                        type: "login_user",
+                        type: 'login_user',
                         payload: {
                             id: user.uid,
                             name: user.displayName
                         }
-                    })
-                    resolve()
-                }).then(() => {
+                    });
+                    navigate('/');
+                }
+            });
+        };
+        
+        checkIfUserSignedIn();
+    }, [dispatch, navigate]);
 
-                    navigate('/')
-                })
-              // ...
-            } else {
-              // User is signed out
-              // ...
-            }
-          });
-    }
-
-    useEffect(()=> {
-        checkIfUserSignedIn()
-        // eslint-disable-next-line
-    }, [])
-
+    const { email, username, password } = formData;
+    const { emailErr, passwordErr, usernameErr } = errorMessages;
 
     return (
         <div className='w-100 vh-100'>
@@ -142,43 +141,76 @@ function Auth() {
                     <div className="auth-container border shadow rounded-lg p-4 w-100">
                         <div className="logo d-flex justify-content-center">
                             <div className="logo-img">
-                                <img src={Logo} alt="" />
+                                <img src={Logo} alt="Logo" />
                             </div>
                         </div>
-                        <h4 className="text-center text-danger mb-3">{loginState ? "Login" : "Register"}</h4>
+                        <h4 className="text-center text-danger mb-3">
+                            {loginState === 'login' ? 'Login' : loginState === 'register' ? 'Register' : 'Reset Password'}
+                        </h4>
                         <form onSubmit={handleSubmit}>
-                            {
-                                !loginState &&
-
-                                <div className="form-group">
-                                    <label htmlFor="username">Username</label>
-                                    <input type="text" name="username" id="username" value={username} onChange={handleInputChange} className="form-control" />
-                                </div>
-                            }
+                            {loginState === 'register' && (
+                                <>
+                                    <div className="form-group">
+                                        <label htmlFor="username">Username</label>
+                                        <input
+                                            type="text"
+                                            id="username"
+                                            value={username}
+                                            onChange={handleInputChange}
+                                            className={`form-control ${usernameErr && 'is-invalid'}`}
+                                        />
+                                        <div className="invalid-feedback">{usernameErr}</div>
+                                    </div>
+                                </>
+                            )}
                             <div className="form-group">
                                 <label htmlFor="email">Email</label>
-                                <input type="email" name="email" id="email" value={email} onChange={handleInputChange} className="form-control" />
+                                <input
+                                    type="email"
+                                    id="email"
+                                    value={email}
+                                    onChange={handleInputChange}
+                                    className={`form-control ${emailErr && 'is-invalid'}`}
+                                />
+                                <div className="invalid-feedback">{emailErr}</div>
                             </div>
-                            <div className="form-group">
-                                <label htmlFor="password">Password</label>
-                                <input type="password" name="password" id="password" value={password} onChange={handleInputChange} className="form-control" />
-                            </div>
-                            <button type="submit" className="btn btn-danger btn-block">{loginState ? "Login" : "Register"}</button>
-
+                            {loginState !== 'forget-password' && (
+                                <div className="form-group">
+                                    <label htmlFor="password">Password</label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        value={password}
+                                        onChange={handleInputChange}
+                                        className={`form-control ${passwordErr && 'is-invalid'}`}
+                                    />
+                                    <div className="invalid-feedback">{passwordErr}</div>
+                                </div>
+                            )}
+                            <button type="submit" className="btn btn-danger btn-block">
+                                {loginState === 'login' ? 'Login' : loginState === 'register' ? 'Register' : 'Reset Password'}
+                            </button>
                             <div className="mt-4 d-flex align-items-center justify-content-between">
                                 <p className='m-0'>
-                                    {loginState ? "Don't" : "Already"} have an account?
-                                    <span className='ml-2'>{loginState ? <a href='/#/auth' onClick={changeLoginState}>Resgister</a> : <a href='/#/auth' onClick={changeLoginState}>Login</a>}</span>
+                                    {loginState === 'login' ? "Don't" : 'Already'} have an account?
+                                    <span className='ml-2'>
+                                        {loginState === 'login' ? (
+                                            <a href='/#/auth' onClick={() => setLoginState('register')}>Register</a>
+                                        ) : (
+                                            <a href='/#/auth' onClick={() => setLoginState('login')}>Login</a>
+                                        )}
+                                    </span>
                                 </p>
+                                {loginState === 'login' && (
+                                    <a href='/#/auth' onClick={() => setLoginState('forget-password')}>Forgot Password?</a>
+                                )}
                             </div>
                         </form>
-
                     </div>
-
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default Auth
+export default Auth;

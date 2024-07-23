@@ -2,9 +2,10 @@ import React, { createContext, useReducer, useEffect, useMemo, useContext, useSt
 import OpenAI from "openai";
 import { UIContext } from "./UiContext";
 import { v4 as uuid4 } from "uuid";
-import { doc, getDocs, collection, addDoc, query, where, orderBy } from "firebase/firestore";
+import { doc, getDocs, collection, addDoc, query, where, orderBy, deleteDoc } from "firebase/firestore";
 import { db } from "../firestore";
-import Reducer from "../reducer";
+import Reducer from "../reducer"
+import { useAlert } from "react-alert";
 
 export const chatContext = createContext();
 
@@ -39,6 +40,7 @@ function extractTitleAndBody(text) {
 
 const ChatContextProvider = ({ children }) => {
     const { setShowBtn } = useContext(UIContext);
+    const alert = useAlert()
 
     const initialState = {
         loading: false,
@@ -205,10 +207,13 @@ const ChatContextProvider = ({ children }) => {
             const collectionRef = collection(db, 'chatHistories');
             const q = query(collectionRef, where('userId', '==', userId), orderBy('createdAt', 'desc'));
             const querySnapshot = await getDocs(q);
-            const fetchedDocuments = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+            const fetchedDocuments = querySnapshot.docs.map(doc =>  {
+
+                return ({
+                    ...doc.data(),
+                    uid: doc.id,
+            })}
+        );
 
             dispatch({
                 type: "set_histories",
@@ -216,6 +221,25 @@ const ChatContextProvider = ({ children }) => {
             });
         } catch (error) {
             console.error('Error fetching histories:', error);
+        }
+    };
+
+
+    const deleteHistory = async (historyId, id) => {
+        try {
+            // Reference to the document
+            const docRef = doc(db, 'chatHistories', historyId);
+
+            // Delete the document
+            await deleteDoc(docRef);
+             alert.info('Chat history successfully deleted!');
+             dispatch({
+                type: "remove_history",
+                payload: id
+            })
+        } catch (err) {
+          alert.error("Chat history not deleted! Something went wrong.")
+
         }
     };
 
@@ -248,6 +272,7 @@ const ChatContextProvider = ({ children }) => {
             storeMessage,
             fetchAllMessages,
             fetchHistories,
+            deleteHistory,
         }}>
             {children}
         </chatContext.Provider>

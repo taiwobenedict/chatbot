@@ -25,6 +25,21 @@ function Reducer(state, action) {
       })
 
       return { ...state, };
+    case 'search':
+
+
+      const searchQuery = action.payload
+
+      const searchedHistories = state.histories.filter((item) =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.body.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+      return { ...state, histories: searchedHistories };
+    case 'remove_history':
+      const historyId = action.payload
+      const newHistory = state.histories.filter(history => history.id !== historyId )
+      return { ...state, histories: newHistory };
     case 'set_messages':
       return { ...state, chats: action.payload, newChat: false };
     case 'error':
