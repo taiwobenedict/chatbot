@@ -60,7 +60,7 @@ function MainScreen() {
                         <CiPaperplane className="question-icon" size={35} onClick={handleSubmit} />
                     </div>
                     <div className="box">
-                        <small className="text-right d-block pt-3 pb-1 text-muted" >Powered by mitrealaw</small>
+                        <small className="text-right d-block pt-2 pb-1 text-muted" >Powered by mitrealaw</small>
                     </div>
                 </form>
 
