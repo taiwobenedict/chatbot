@@ -50,7 +50,7 @@ function MiniSideBar() {
             </div>
 
 
-            <div className="sidebar-footer">
+            <div className="sidebar-footer pb-4">
                 <div className="user mb-3">
                     <img src={User} alt="" />
                     <p className="mt-2">{user?.name}</p>

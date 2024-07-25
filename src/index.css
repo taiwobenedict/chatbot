@@ -132,8 +132,8 @@ img {
   width: 100%;
   max-width: 180px;
   background-color: #f9f9f9;
-  height: 100vh;
   position: sticky;
+  height: 100%;
   top: 0;
   transition: 0.4s;
   z-index: 3;
@@ -234,7 +234,6 @@ img {
 
 
 .box {
-  height: 10px;
   background-color: var(--white-color);
   width: 100%;
 }
