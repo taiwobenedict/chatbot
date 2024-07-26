@@ -35,11 +35,8 @@ img {
 .sidebar {
   width: 100%;
   max-width: 320px;
-  height: 100vh;
   background-color: inherit;
   background-color: var(--sec-color);
-  position: sticky;
-  top: 0;
   transition: 0.4s;
 }
 
@@ -132,20 +129,17 @@ img {
   width: 100%;
   max-width: 180px;
   background-color: #f9f9f9;
-  position: sticky;
-  height: 100%;
-  top: 0;
   transition: 0.4s;
-  z-index: 3;
+}
+
+.mini-sidebar-content {
+  height: 100%;
 }
 
 /* SideBar Footer */
 
 .sidebar-footer {
   border-top: solid 1px var(--white-color);
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
   padding: 10px;
   /* background-color: var(--sec-color); */
@@ -173,8 +167,8 @@ img {
   background-color: var(--white-color);
   max-width: 850px;
   padding: 20px 10px 0px 40px;
-  height: 100vh;
   overflow-y: auto;
+  height: 100vh;
 }
 
 .chats {
@@ -269,11 +263,7 @@ img {
 
 
 /* Responsiveness */
-.menubar {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
+
 
 .toggler {
   font-size: 1.8rem;
@@ -352,6 +342,7 @@ img {
 
 
 
+
 /* // Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) { 
 
@@ -362,6 +353,7 @@ img {
   .sidebar {
     transform: translateX(-100%);
     position: fixed;
+    height: 100%;
     z-index: 2;
     
   }
@@ -382,8 +374,16 @@ img {
   .mini-sidebar {
     transform: translateX(-100%);
     position: fixed;
+    height: 100%;
+    z-index: 1;
     
   }
+
+  .mini-sidebar-content {
+    height: calc(100% - 60px) ;
+  }
+
+
 
   .show-bar {
     transform: translateX(0px);

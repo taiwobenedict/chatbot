@@ -19,7 +19,7 @@ function MainScreen() {
     }
 
     return (
-        <div className='mainscreen flex-grow-1 position-relative pb-0'>
+        <div className='mainscreen flex-grow-1 pb-0'>
 
 
             {

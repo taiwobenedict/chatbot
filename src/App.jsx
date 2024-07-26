@@ -14,7 +14,7 @@ function App() {
 
         <Route  element={<ProtectRoute />}>
           <Route  path="/" element={
-            <div className="d-flex position-fixed w-100">
+            <div className="d-flex w-100">
               <MenuBar />
               <MiniSideBar />
               <SideBar />
