@@ -1,0 +1,421 @@
+:root {
+  --pri-color: #e12d20;
+  --sec-color: #f2f2f2;
+  --white-color: #ffffff;
+}
+
+html {
+  scroll-behavior: smooth !important;
+}
+
+/* Font */
+@font-face {
+  font-family: "Adamina";
+  src: url("fonts/Adamina-Regular.ttf"); /* Modern Browsers */
+}
+
+body {
+  font-family: "Adamina", sans-serif !important;
+  font-size: 12px !important;
+}
+
+/* General Styles */
+img {
+  width: 100%;
+}
+
+.pri-text {
+  color: var(--pri-color);
+}
+
+.sec-bg {
+  background-color: var(--sec-color);
+}
+/* SideBar Header */
+.sidebar {
+  width: 100%;
+  max-width: 320px;
+  background-color: inherit;
+  background-color: var(--sec-color);
+  transition: 0.4s;
+  max-height: 100vh;
+}
+
+.logo-img {
+  max-width: 40px;
+}
+
+.logo-text {
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.add-icon {
+  background-color: var(--pri-color);
+  font-size: 1.8rem;
+  color: var(--white-color);
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.search {
+  width: 100%;
+  position: relative;
+  display: inline-block;
+  margin-top: 1.2rem;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.search-input {
+  background-color: var(--white-color);
+  padding-left: 30px;
+  height: 35px;
+  font-size: 14px;
+  border: none;
+  outline: none;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #ebeff6;
+  transition: 0.4s;
+
+}
+
+.search-input:focus {
+  box-shadow: 0px 1.41px 5.06px 0px #e12d2074;
+}
+
+/* Sider Body */
+.histories {
+  overflow-y: auto;
+  height: calc(100% - 85px);
+}
+
+
+.chat-history {
+  padding: 10px;
+  cursor: pointer;
+
+}
+
+.chat-heading {
+  font-size: 15px;
+}
+
+.history-heading {
+  min-width: 238.13px
+}
+
+.history-icon {
+  max-width: 15px;
+}
+
+.active-history {
+  background-color: #1E1F22;
+  color: var(--white-color);
+  border-radius: 10px;
+}
+
+/* Mini Sidebar */
+.mini-sidebar {
+  width: 100%;
+  max-width: 180px;
+  background-color: #f9f9f9;
+  transition: 0.4s;
+}
+
+.mini-sidebar-content {
+  height: 100%;
+  padding-bottom: 3rem;
+}
+
+/* SideBar Footer */
+
+.sidebar-footer {
+  border-top: solid 1px var(--white-color);
+  width: 100%;
+  padding: 10px;
+  /* background-color: var(--sec-color); */
+}
+
+.user {
+  max-width: 40px;
+}
+
+.logout-icon {
+  max-width: 20px;
+}
+
+.logout {
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.logout:hover {
+  color: #e12d20;
+}
+
+/* Main Screen */
+.mainscreen {
+  background-color: var(--white-color);
+  max-width: 850px;
+  padding: 20px 10px 0px 40px;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.chats {
+  max-width: 650px;
+  margin-inline: auto;
+  position: relative;
+  margin-bottom: 10rem;
+  padding-bottom: 0 !important;
+}
+
+
+.chat-img {
+  max-width: 40px;
+  position: absolute;
+  top: 0;
+  left: -25px;
+  
+}
+
+.chat {
+  width: fit-content;
+  
+}
+.chat-body {
+  border-radius: 20px;
+  padding: 10px 23px;
+}
+
+.edit-chat {
+  transform: translate(2px, -3px);
+  font-size: 1rem;
+  cursor: pointer;
+}
+.message {
+  background-color: var(--sec-color);
+}
+
+.custom-btn {
+  background: #4C4B4B;
+  color: var(--white-color);
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+  visibility: hidden;
+  opacity: 0;
+  display: none;
+}
+
+
+.form-container {
+  max-width: 750px ;
+  transform: translateX(-20px);
+  position: fixed;
+  bottom: 45px;
+}
+
+
+.box {
+  background-color: var(--white-color);
+  width: 100%;
+}
+
+.question-input {
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background-color: inherit;
+}
+
+
+.question-input::placeholder,
+.question-icon {
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.show-btn {
+  display: flex;
+  visibility: visible;
+  opacity: 1;
+}
+
+.welcome {
+  height: calc(100% - 124.32px);
+}
+
+.welcome > div {
+  transform: translateX(-20px);
+  margin-bottom: 10rem;
+}
+
+
+/* Responsiveness */
+
+
+.toggler {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  margin-left: auto;
+  display: block;
+  cursor: pointer;
+}
+
+.menu-chats-icon,
+.menu-add-icon {
+  display: none;
+}
+
+
+.auth-container {
+  max-width: 400px;
+  margin-inline: auto;
+}
+
+.form-control:focus {
+  border-color: rgb(225, 45, 32);
+  box-shadow: 0 0 0 0.2rem rgba(225, 45, 32, 0.25)
+}
+
+.chat-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: 0.4s;
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.chat-history:hover .chat-cover{
+  background-color: rgba(225, 45, 32, 0.3);
+}
+
+
+.delete-history {
+  font-size: 1.5rem;
+  padding: 2px;
+  display: inline-block;
+  background-color: var(--white-color);
+  margin-left: auto;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: 0.4s;
+}
+
+
+.delete-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.chat-history:hover .delete-history {
+  opacity: 1;
+  visibility: visible;
+}
+
+.active-history .chat-cover:hover {
+  background-color: unset;
+}
+
+.footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0px;
+  z-index: 100;
+}
+
+
+/* // Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) { 
+
+ }
+
+/* // Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) { 
+  .sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    height: 100%;
+    z-index: 2;
+    
+  }
+
+  .menu-chats-icon,
+  .menu-add-icon {
+    display: block;
+  }
+
+  .form-container {
+    width: calc(100vw - 80px);
+  }
+
+ }
+
+/* // Medium devices (tablets, less than 992px) */
+@media (max-width: 991.98px) { 
+  .mini-sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    height: 100%;
+    z-index: 1;
+    
+  }
+
+  .mini-sidebar-content {
+    height: calc(100% - 60px) ;
+  }
+
+
+
+  .show-bar {
+    transform: translateX(0px);
+    transition: 0.4s;
+  }
+
+  
+ }
+
+/* // Large devices (desktops, less than 1200px) */
+@media (min-width:768px) { 
+   .sidebar-toggler-close {
+    display: none;
+   }
+
+   .form-container {
+    width: calc(100vw - 400px);
+  }
+ }
+
+ @media (min-width: 991.98px) { 
+  .mini-toggler-close,
+  .menubar {
+    display: none;
+  }
+
+  .form-container {
+    width: calc(100vw - 537px);
+  }
+ }
+
