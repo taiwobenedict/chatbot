@@ -8,7 +8,7 @@ function Footer() {
                     
                     <a href="/" className='mb-2 mr-3 text-muted'>Terms</a>
                     
-                    <a href="/" className='mb-2 mr-3 text-muted'>Policy of use</a>
+                    <a href="/" className='mb-2 mr-3 text-muted'>Policy</a>
                 </div>
                 <small className="text-right d-block pt-2 pb-1 text-muted" >Powered by mitrealaw</small>
             </div>
